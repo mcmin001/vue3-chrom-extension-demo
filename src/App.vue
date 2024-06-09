@@ -16,7 +16,7 @@ export default {
   methods: {
     changeColor() {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "changeColor", color: this.color, tabTitle: tabs[0].title }, (response) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "changeColor", color: this.color, tabTitle: tabs[0].title, tabId: tabs[0].id }, (response) => {
           console.log(response.status);
           console.log(response.tabTitle);
         });

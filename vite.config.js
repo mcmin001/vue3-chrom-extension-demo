@@ -1,27 +1,41 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import {resolve} from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [vue(),
+        viteStaticCopy({
+            targets: [
+                {
+                    src: 'src/js/*.js',
+                    dest: 'src/js'
+                }
+            ]
+        })],
     build: {
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
                 background: resolve(__dirname, 'src/background.js'),
-                content: resolve(__dirname, 'src/content.js')
+                content: resolve(__dirname, 'src/content.js'),
             },
             output: {
-                entryFileNames: (chunkInfo) => {
-                    if (chunkInfo.name === 'background') {
-                        return 'background.js';
-                    } else if (chunkInfo.name === 'content') {
-                        return 'content.js';
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.type === 'asset' && /\.(jpe?g|png|gif|svg)$/i.test(assetInfo.name)) {
+                        return 'assets/img/[name].[ext]';
                     }
-                    return 'assets/[name].js';
+                    if (assetInfo.type === 'asset' && /\.(ttf|woff|woff2|eot)$/i.test(assetInfo.name)) {
+                        return 'assets/fonts/[name].[ext]';
+                    }
+                    if (assetInfo.type === 'asset' && /\.(css)$/i.test(assetInfo.name)) {
+                        return 'src/[name]/[name].[ext]';
+                    }
+                    return 'assets/[ext]/[name].[ext]';
                 },
-                chunkFileNames: 'assets/[name].js',
-                assetFileNames: 'assets/[name].[ext]'
+                entryFileNames: (chunkInfo) => {
+                    return 'src/[name]/[name].js'
+                },
             }
         }
     }
