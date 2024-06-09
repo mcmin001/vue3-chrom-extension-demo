@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "修改网页背景颜色",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "action": {
     "default_title": "点击设置背景色",

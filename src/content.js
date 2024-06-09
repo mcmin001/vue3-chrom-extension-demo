@@ -1,6 +1,7 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "changeColor") {
         document.body.style.backgroundColor = request.color;
-        sendResponse({status: "Color changed"});
+        console.log("title is " + request.tabTitle)
+        sendResponse({status: "Color changed", tabTitle: request.tabTitle});
     }
 });
