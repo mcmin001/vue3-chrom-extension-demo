@@ -1,27 +1,27 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import {resolve} from 'path';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { resolve } from 'path';
 
 export default defineConfig({
-    plugins: [vue(),
-        viteStaticCopy({
-            targets: [
-                {
-                    src: 'manifest.json',
-                    dest: ''
-                }
-            ]
-        })],
+    plugins: [vue()],
     build: {
         rollupOptions: {
             input: {
-                popup: resolve(__dirname, 'index.html')
+                main: resolve(__dirname, 'index.html'),
+                background: resolve(__dirname, 'src/background.js'),
+                content: resolve(__dirname, 'src/content.js')
             },
             output: {
-                entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]'
+                entryFileNames: (chunkInfo) => {
+                    if (chunkInfo.name === 'background') {
+                        return 'background.js';
+                    } else if (chunkInfo.name === 'content') {
+                        return 'content.js';
+                    }
+                    return 'assets/[name].js';
+                },
+                chunkFileNames: 'assets/[name].js',
+                assetFileNames: 'assets/[name].[ext]'
             }
         }
     }
